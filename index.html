@@ -21,15 +21,16 @@
 <div id="msg" style="color:#F3D9A4;margin-top:12px;min-height:1.3em;font-size:.95rem"></div>
 </div>
 </div>
+<script src="portali.js"></script>
 <script>
 // Il codice personale viene riconosciuto dal prefisso (prime 4 lettere)
 // contro i dati cifrati dei portali della piattaforma: si viene portati
 // al portale giusto col codice gia' inserito. Qui non si decifra nulla.
-var PORTALI=[
- {dati:"https://dati.bedomaxcontab.it/dati.js",portale:"https://www.sicurcalor.it/consumi"}
-];
+// L'elenco dei portali sta in portali.js, RIGENERATO DA SOLO a ogni
+// nuovo cliente da "Configura portale cliente" (21/08/2026).
 function msg(t){document.getElementById("msg").textContent=t;}
 function cercaCodice(){
+  var PORTALI=window.PORTALI||[];
   var c=document.getElementById("cod").value.replace(/ /g,"").toUpperCase();
   if(c.length<8){msg("Il codice ha 8 caratteri: controlla il foglio.");return;}
   var pre=c.substring(0,4), i=0;
