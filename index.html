@@ -12,12 +12,53 @@
 <img src="logo.png" alt="BedoMaxContab" style="max-height:68px;max-width:80%">
 <div style="font-size:1.7rem;font-weight:700;margin-top:16px">I consumi del tuo appartamento</div>
 <div style="color:#BFD9E8;margin-top:8px">riscaldamento &middot; acqua &middot; contaenergia &mdash; sempre consultabili, in ogni momento</div>
+<div style="margin-top:22px">
+<input id="cod" maxlength="12" placeholder="IL TUO CODICE" autocomplete="off"
+ style="width:230px;max-width:70%;padding:12px 14px;border:0;border-radius:10px;font-size:1.15rem;letter-spacing:.15em;text-align:center;text-transform:uppercase"
+ onkeydown="if(event.key==='Enter')cercaCodice()">
+<button onclick="cercaCodice()"
+ style="padding:12px 22px;border:0;border-radius:10px;background:#C58A1E;color:#fff;font-size:1.05rem;font-weight:700;cursor:pointer;margin-left:6px">Vedi i miei consumi</button>
+<div id="msg" style="color:#F3D9A4;margin-top:12px;min-height:1.3em;font-size:.95rem"></div>
 </div>
+</div>
+<script>
+// Il codice personale viene riconosciuto dal prefisso (prime 4 lettere)
+// contro i dati cifrati dei portali della piattaforma: si viene portati
+// al portale giusto col codice gia' inserito. Qui non si decifra nulla.
+var PORTALI=[
+ {dati:"https://dati.bedomaxcontab.it/dati.js",portale:"https://www.sicurcalor.it/consumi"}
+];
+function msg(t){document.getElementById("msg").textContent=t;}
+function cercaCodice(){
+  var c=document.getElementById("cod").value.replace(/ /g,"").toUpperCase();
+  if(c.length<8){msg("Il codice ha 8 caratteri: controlla il foglio.");return;}
+  var pre=c.substring(0,4), i=0;
+  msg("Un momento, controllo il codice...");
+  function prova(){
+    if(i>=PORTALI.length){
+      msg("Codice non riconosciuto: ricontrolla il foglio, oppure usa il QR o l'indirizzo stampato.");
+      return;
+    }
+    var p=PORTALI[i++];
+    window.COND=undefined;
+    var s=document.createElement("script");
+    s.src=p.dati+"?t="+Date.now();
+    s.onload=function(){
+      var trovato=false;
+      try{(window.COND||[]).forEach(function(cd){if(cd.rt&&cd.rt[pre])trovato=true;});}catch(e){}
+      if(trovato){location.href=p.portale+"#"+c;}else{prova();}
+    };
+    s.onerror=prova;
+    document.head.appendChild(s);
+  }
+  prova();
+}
+</script>
 <div style="background:#fff;border-radius:18px;padding:28px 30px;margin-top:18px;box-shadow:0 4px 16px rgba(16,40,60,.08);line-height:1.6">
 <div style="font-size:1.05rem;font-weight:700;color:#0E3A5C;margin-bottom:14px">Come vedere i miei consumi</div>
 <div style="display:flex;gap:12px;margin-bottom:12px"><div style="flex:none;width:28px;height:28px;border-radius:50%;background:#C58A1E;color:#fff;font-weight:700;text-align:center;line-height:28px">1</div><div>Prendi il foglio col <b>codice personale</b> che ti &egrave; stato consegnato per il tuo appartamento.</div></div>
-<div style="display:flex;gap:12px;margin-bottom:12px"><div style="flex:none;width:28px;height:28px;border-radius:50%;background:#C58A1E;color:#fff;font-weight:700;text-align:center;line-height:28px">2</div><div><b>Inquadra il codice QR</b> col telefono, oppure digita nel browser l&rsquo;indirizzo scritto sul foglio.</div></div>
-<div style="display:flex;gap:12px"><div style="flex:none;width:28px;height:28px;border-radius:50%;background:#C58A1E;color:#fff;font-weight:700;text-align:center;line-height:28px">3</div><div>Inserisci il codice: vedrai <b>solo i consumi del tuo appartamento</b>, con il confronto con l&rsquo;anno precedente. I dati sono cifrati.</div></div>
+<div style="display:flex;gap:12px;margin-bottom:12px"><div style="flex:none;width:28px;height:28px;border-radius:50%;background:#C58A1E;color:#fff;font-weight:700;text-align:center;line-height:28px">2</div><div>Scrivi il codice <b>nella casella qui sopra</b>, oppure <b>inquadra il codice QR</b> del foglio col telefono.</div></div>
+<div style="display:flex;gap:12px"><div style="flex:none;width:28px;height:28px;border-radius:50%;background:#C58A1E;color:#fff;font-weight:700;text-align:center;line-height:28px">3</div><div>Vedrai <b>solo i consumi del tuo appartamento</b>, con il confronto con l&rsquo;anno precedente. I dati sono cifrati.</div></div>
 </div>
 <div style="background:#fff;border-radius:18px;padding:22px 30px;margin-top:18px;box-shadow:0 4px 16px rgba(16,40,60,.08);line-height:1.6">
 <b style="color:#0E3A5C">Cosa vedi nel portale</b><br>
